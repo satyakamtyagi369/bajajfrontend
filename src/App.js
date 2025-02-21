@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import InputForm from "./components/InputForm";
+import Dropdown from "./components/Dropdown";
+import ResponseDisplay from "./components/ResponseDisplay";
+import "./styles/App.css";
 
-function App() {
+const App = () => {
+  const [apiResponse, setApiResponse] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const handleJsonSubmit = async (jsonData) => {
+    try {
+      const response = await fetch("https://bajajendpoint29112003.onrender.com/bfhl", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonData),
+      });
+      const result = await response.json();
+      setApiResponse(result);
+    } catch (error) {
+      console.error("Error fetching API:", error);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>22BET10013</h1>
+      <InputForm onSubmit={handleJsonSubmit} />
+      {apiResponse && <Dropdown onSelect={setSelectedOption} />}
+      {apiResponse && <ResponseDisplay response={apiResponse} selectedOption={selectedOption} />}
     </div>
   );
-}
+};
 
 export default App;
